@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Athan & Quran App</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#064e3b">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7f3;color:#102018}.app{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.sidebar{background:linear-gradient(180deg,#064e3b,#022c22);color:white;padding:20px}.brand{font-size:26px;font-weight:900}.sub{color:#bbf7d0;font-size:13px;margin:4px 0 20px}.nav button{width:100%;border:0;border-radius:14px;padding:13px;margin-bottom:10px;font-weight:800;cursor:pointer;background:rgba(255,255,255,.12);color:white;text-align:left}.nav button.active{background:#22c55e;color:#052e16}.main{padding:22px;overflow:auto}.card{background:white;border:1px solid #dbe7dd;border-radius:20px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.prayer{border-radius:18px;padding:15px;background:#ecfdf5;border:1px solid #bbf7d0}.prayer.next{background:#064e3b;color:white}.label{font-size:12px;color:#64748b;font-weight:800;text-transform:uppercase}.next .label{color:#bbf7d0}.time{font-size:24px;font-weight:900;margin-top:5px}input,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:12px;background:white;font-weight:700}.formgrid{display:grid;grid-template-columns:1fr 1fr 160px;gap:10px}.primary,.secondary{border:0;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}.primary{background:#16a34a;color:white}.secondary{background:#e2e8f0;color:#0f172a}.hidden{display:none}.surahList{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:380px;overflow:auto}.surahBtn{text-align:left;border:1px solid #dbe7dd;background:#fff;border-radius:14px;padding:12px;cursor:pointer;font-weight:800}.ayah{border-bottom:1px solid #e5e7eb;padding:16px 0}.arabic{direction:rtl;text-align:right;font-size:28px;line-height:2;font-family:serif}.translation{color:#334155;line-height:1.6;margin-top:8px}.small{font-size:12px;color:#64748b}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:900}.counter{font-size:42px;font-weight:900;text-align:center;padding:20px}.tasbihBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:850px){.app{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div style="text-align:center;margin-bottom:14px;"><img src="logo.png" style="width:100%;max-width:180px;border-radius:18px;box-shadow:0 8px 25px rgba(0,0,0,.25);"></div><div class="brand">Athan & Quran</div><div class="sub">Prayer times, Quran, Qibla, Tasbih</div>
+<div class="nav">
+<button class="active" data-tab="prayer">🕌 Prayer Times</button>
+<button data-tab="quran">📖 Quran</button>
+<button data-tab="qibla">🧭 Qibla</button>
+<button data-tab="tasbih">📿 Tasbih</button>
+<button data-tab="settings">⚙️ Settings</button>
+</div></aside>
+<main class="main"><div style="text-align:center;margin-bottom:20px;"><img src="logo.png" style="width:160px;max-width:70%;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.12);"></div>
+<section id="prayer" class="tab">
+<h1>Prayer Times <span class="pill" id="todayText"></span></h1><div class="small" id="locationText">Loading...</div>
+<div class="card"><div class="formgrid"><input id="city" placeholder="City e.g. Fairfield"/><input id="country" placeholder="Country e.g. United States"/><button class="primary" id="loadPrayer">Load Times</button></div><p class="small">Uses Aladhan public API when online.</p></div>
+<div class="card"><h2>Next Prayer</h2><div id="nextPrayer" class="time">--</div><div class="small" id="countdown">--</div></div>
+<div class="grid" id="prayerGrid"></div>
+</section>
+<section id="quran" class="tab hidden">
+<h1>Quran</h1>
+<div class="card"><div class="formgrid"><input id="quranSearch" placeholder="Search surah name or number..."/><select id="translation"><option value="en.sahih">English - Sahih International</option><option value="en.pickthall">English - Pickthall</option><option value="en.yusufali">English - Yusuf Ali</option></select><button class="primary" id="loadSurahBtn">Load Selected</button></div></div>
+<div class="card"><h2>Surahs</h2><div class="surahList" id="surahList"></div></div>
+<div class="card"><h2 id="surahTitle">Select a Surah</h2><div id="ayahs"></div></div>
+</section>
+<section id="qibla" class="tab hidden"><h1>Qibla Direction</h1><div class="card"><button class="primary" id="qiblaBtn">Use My Location</button><div class="counter" id="qiblaDeg">--°</div><p class="small">Use your phone compass and face this degree.</p></div></section>
+<section id="tasbih" class="tab hidden"><h1>Tasbih Counter</h1><div class="card"><select id="dhikr"><option>SubhanAllah</option><option>Alhamdulillah</option><option>Allahu Akbar</option><option>La ilaha illa Allah</option><option>Astaghfirullah</option></select><div class="counter" id="tasbihCount">0</div><div class="tasbihBtns"><button class="primary" id="plusTasbih">+ Count</button><button class="secondary" id="resetTasbih">Reset</button></div></div></section>
+<section id="settings" class="tab hidden"><h1>Settings</h1><div class="card"><label>Calculation Method</label><select id="method"><option value="2">ISNA - North America</option><option value="3">Muslim World League</option><option value="4">Umm Al-Qura, Makkah</option><option value="5">Egyptian General Authority</option><option value="1">Karachi</option></select><br><br><button class="primary" id="saveSettings">Save Settings</button></div></section>
+</main></div>
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll(".nav button").forEach(btn=>btn.onclick=()=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));$(btn.dataset.tab).classList.remove("hidden")});
+let prayerTimes={},selectedSurah=1,tasbih=Number(localStorage.getItem("tasbih")||0);
+$("todayText").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+function cleanTime(t){return String(t||"").replace(/\s*\(.+\)/,"")}function toDateToday(t){let [h,m]=cleanTime(t).split(":").map(Number);let d=new Date();d.setHours(h,m,0,0);return d}
+function nextPrayer(){let names=["Fajr","Dhuhr","Asr","Maghrib","Isha"],now=new Date(),next=null;for(let n of names){let d=toDateToday(prayerTimes[n]);if(d>now){next={name:n,date:d,time:prayerTimes[n]};break}}if(!next){let d=toDateToday(prayerTimes.Fajr);d.setDate(d.getDate()+1);next={name:"Fajr",date:d,time:prayerTimes.Fajr}}$("nextPrayer").textContent=`${next.name} — ${cleanTime(next.time)}`;clearInterval(window.pt);window.pt=setInterval(()=>{let diff=next.date-new Date();if(diff<0){$("countdown").textContent="Time entered";return}let h=Math.floor(diff/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);$("countdown").textContent=`${h}h ${m}m ${s}s remaining`},1000)}
+function renderPrayer(){let next=$("nextPrayer").textContent.split(" — ")[0];$("prayerGrid").innerHTML=["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"].map(n=>`<div class="prayer ${n===next?"next":""}"><div class="label">${n}</div><div class="time">${cleanTime(prayerTimes[n])||"--"}</div></div>`).join("")}
+async function loadPrayer(){let city=$("city").value.trim()||"Fairfield",country=$("country").value.trim()||"United States",method=localStorage.getItem("method")||"2";localStorage.setItem("city",city);localStorage.setItem("country",country);$("locationText").textContent=`${city}, ${country}`;try{let r=await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${method}`);let d=await r.json();prayerTimes=d.data.timings;nextPrayer();renderPrayer()}catch(e){$("locationText").textContent="Could not load prayer times."}}
+$("city").value=localStorage.getItem("city")||"Fairfield";$("country").value=localStorage.getItem("country")||"United States";$("method").value=localStorage.getItem("method")||"2";$("loadPrayer").onclick=loadPrayer;$("saveSettings").onclick=()=>{localStorage.setItem("method",$("method").value);loadPrayer();alert("Saved")};loadPrayer();
+const surahs=["Al-Fatihah","Al-Baqarah","Ali Imran","An-Nisa","Al-Maidah","Al-Anam","Al-Araf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf","Ar-Rad","Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahf","Maryam","Ta-Ha","Al-Anbya","Al-Hajj","Al-Muminun","An-Nur","Al-Furqan","Ash-Shuara","An-Naml","Al-Qasas","Al-Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba","Fatir","Ya-Sin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Ash-Shuraa","Az-Zukhruf","Ad-Dukhan","Al-Jathiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Adh-Dhariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqiah","Al-Hadid","Al-Mujadila","Al-Hashr","Al-Mumtahanah","As-Saff","Al-Jumuah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Maarij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddaththir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba","An-Naziat","Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Inshiqaq","Al-Buruj","At-Tariq","Al-Ala","Al-Ghashiyah","Al-Fajr","Al-Balad","Ash-Shams","Al-Layl","Ad-Duhaa","Ash-Sharh","At-Tin","Al-Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-Adiyat","Al-Qariah","At-Takathur","Al-Asr","Al-Humazah","Al-Fil","Quraysh","Al-Maun","Al-Kawthar","Al-Kafirun","An-Nasr","Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"];
+function renderSurahs(){let q=$("quranSearch").value.toLowerCase().trim();$("surahList").innerHTML=surahs.map((name,i)=>({name,num:i+1})).filter(s=>!q||String(s.num).includes(q)||s.name.toLowerCase().includes(q)).map(s=>`<button class="surahBtn" data-num="${s.num}">${s.num}. ${s.name}</button>`).join("");document.querySelectorAll(".surahBtn").forEach(b=>b.onclick=()=>{selectedSurah=Number(b.dataset.num);loadSurah()})}
+$("quranSearch").oninput=renderSurahs;renderSurahs();
+async function loadSurah(){$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]} — Loading...`;$("ayahs").innerHTML="";try{let ed=$("translation").value;let [ar,en]=await Promise.all([fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/quran-uthmani`),fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/${ed}`)]);ar=await ar.json();en=await en.json();$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]}`;$("ayahs").innerHTML=ar.data.ayahs.map((a,i)=>`<div class="ayah"><div class="small">${selectedSurah}:${i+1}</div><div class="arabic">${a.text}</div><div class="translation">${en.data.ayahs[i]?.text||""}</div></div>`).join("")}catch(e){$("surahTitle").textContent="Could not load Quran."}}
+$("loadSurahBtn").onclick=loadSurah;
+$("qiblaBtn").onclick=()=>navigator.geolocation.getCurrentPosition(pos=>{let lat=pos.coords.latitude*Math.PI/180,lon=pos.coords.longitude*Math.PI/180,klat=21.4225*Math.PI/180,klon=39.8262*Math.PI/180,dlon=klon-lon;let y=Math.sin(dlon),x=Math.cos(lat)*Math.tan(klat)-Math.sin(lat)*Math.cos(dlon);let b=(Math.atan2(y,x)*180/Math.PI+360)%360;$("qiblaDeg").textContent=`${Math.round(b)}°`},()=>alert("Location denied"));
+$("tasbihCount").textContent=tasbih;$("plusTasbih").onclick=()=>{tasbih++;localStorage.setItem("tasbih",tasbih);$("tasbihCount").textContent=tasbih};$("resetTasbih").onclick=()=>{tasbih=0;localStorage.setItem("tasbih",0);$("tasbihCount").textContent=0};
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+  });
+}
+</script>
+
+</body>
+</html>
