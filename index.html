@@ -32,6 +32,23 @@
 <section id="quran" class="tab hidden">
 <h1>Quran</h1>
 <div class="card"><div class="formgrid"><input id="quranSearch" placeholder="Search surah name or number..."/><select id="translation"><option value="en.sahih">English - Sahih International</option><option value="en.pickthall">English - Pickthall</option><option value="en.yusufali">English - Yusuf Ali</option></select><button class="primary" id="loadSurahBtn">Load Selected</button></div></div>
+<div class="card">
+  <h2>Reciter</h2>
+  <div class="formgrid">
+    <select id="reciter">
+      <option value="ar.alafasy">Mishary Rashid Alafasy</option>
+      <option value="ar.abdulbasitmurattal">Abdul Basit Murattal</option>
+      <option value="ar.husary">Mahmoud Khalil Al-Husary</option>
+      <option value="ar.minshawi">Mohamed Siddiq Al-Minshawi</option>
+      <option value="ar.mahermuaiqly">Maher Al-Muaiqly</option>
+      <option value="ar.saoodshuraym">Saud Al-Shuraim</option>
+    </select>
+    <button class="primary" id="playSurahBtn">▶ Play Surah</button>
+    <button class="secondary" id="stopAudioBtn">■ Stop</button>
+  </div>
+  <p class="small">Audio streams online. You can also play each ayah after loading a surah.</p>
+  <audio id="quranAudio" controls style="width:100%;margin-top:10px"></audio>
+</div>
 <div class="card"><h2>Surahs</h2><div class="surahList" id="surahList"></div></div>
 <div class="card"><h2 id="surahTitle">Select a Surah</h2><div id="ayahs"></div></div>
 </section>
@@ -52,10 +69,46 @@ $("city").value=localStorage.getItem("city")||"Fairfield";$("country").value=loc
 const surahs=["Al-Fatihah","Al-Baqarah","Ali Imran","An-Nisa","Al-Maidah","Al-Anam","Al-Araf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf","Ar-Rad","Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahf","Maryam","Ta-Ha","Al-Anbya","Al-Hajj","Al-Muminun","An-Nur","Al-Furqan","Ash-Shuara","An-Naml","Al-Qasas","Al-Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba","Fatir","Ya-Sin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Ash-Shuraa","Az-Zukhruf","Ad-Dukhan","Al-Jathiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Adh-Dhariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqiah","Al-Hadid","Al-Mujadila","Al-Hashr","Al-Mumtahanah","As-Saff","Al-Jumuah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Maarij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddaththir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba","An-Naziat","Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Inshiqaq","Al-Buruj","At-Tariq","Al-Ala","Al-Ghashiyah","Al-Fajr","Al-Balad","Ash-Shams","Al-Layl","Ad-Duhaa","Ash-Sharh","At-Tin","Al-Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-Adiyat","Al-Qariah","At-Takathur","Al-Asr","Al-Humazah","Al-Fil","Quraysh","Al-Maun","Al-Kawthar","Al-Kafirun","An-Nasr","Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"];
 function renderSurahs(){let q=$("quranSearch").value.toLowerCase().trim();$("surahList").innerHTML=surahs.map((name,i)=>({name,num:i+1})).filter(s=>!q||String(s.num).includes(q)||s.name.toLowerCase().includes(q)).map(s=>`<button class="surahBtn" data-num="${s.num}">${s.num}. ${s.name}</button>`).join("");document.querySelectorAll(".surahBtn").forEach(b=>b.onclick=()=>{selectedSurah=Number(b.dataset.num);loadSurah()})}
 $("quranSearch").oninput=renderSurahs;renderSurahs();
-async function loadSurah(){$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]} — Loading...`;$("ayahs").innerHTML="";try{let ed=$("translation").value;let [ar,en]=await Promise.all([fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/quran-uthmani`),fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/${ed}`)]);ar=await ar.json();en=await en.json();$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]}`;$("ayahs").innerHTML=ar.data.ayahs.map((a,i)=>`<div class="ayah"><div class="small">${selectedSurah}:${i+1}</div><div class="arabic">${a.text}</div><div class="translation">${en.data.ayahs[i]?.text||""}</div></div>`).join("")}catch(e){$("surahTitle").textContent="Could not load Quran."}}
+async function loadSurah(){$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]} — Loading...`;$("ayahs").innerHTML="";try{let ed=$("translation").value;let [ar,en]=await Promise.all([fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/quran-uthmani`),fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/${ed}`)]);ar=await ar.json();en=await en.json();$("surahTitle").textContent=`${selectedSurah}. ${surahs[selectedSurah-1]}`;$("ayahs").innerHTML=ar.data.ayahs.map((a,i)=>`<div class="ayah"><div class="small">${selectedSurah}:${i+1} <button class="secondary playAyah" data-ayah="${i+1}" style="padding:6px 10px;margin-left:8px">▶ Play Ayah</button></div><div class="arabic">${a.text}</div><div class="translation">${en.data.ayahs[i]?.text||""}</div></div>`).join("");document.querySelectorAll(".playAyah").forEach(b=>b.onclick=()=>playAyah(Number(b.dataset.ayah)))}catch(e){$("surahTitle").textContent="Could not load Quran."}}
 $("loadSurahBtn").onclick=loadSurah;
 $("qiblaBtn").onclick=()=>navigator.geolocation.getCurrentPosition(pos=>{let lat=pos.coords.latitude*Math.PI/180,lon=pos.coords.longitude*Math.PI/180,klat=21.4225*Math.PI/180,klon=39.8262*Math.PI/180,dlon=klon-lon;let y=Math.sin(dlon),x=Math.cos(lat)*Math.tan(klat)-Math.sin(lat)*Math.cos(dlon);let b=(Math.atan2(y,x)*180/Math.PI+360)%360;$("qiblaDeg").textContent=`${Math.round(b)}°`},()=>alert("Location denied"));
 $("tasbihCount").textContent=tasbih;$("plusTasbih").onclick=()=>{tasbih++;localStorage.setItem("tasbih",tasbih);$("tasbihCount").textContent=tasbih};$("resetTasbih").onclick=()=>{tasbih=0;localStorage.setItem("tasbih",0);$("tasbihCount").textContent=0};
+
+function pad3(n){return String(n).padStart(3,"0")}
+function getReciter(){return $("reciter") ? $("reciter").value : "ar.alafasy"}
+async function playAyah(ayah){
+  const audio=$("quranAudio");
+  const rec=getReciter();
+  try{
+    const r=await fetch(`https://api.alquran.cloud/v1/ayah/${selectedSurah}:${ayah}/${rec}`);
+    const d=await r.json();
+    audio.src=d.data.audio;
+    audio.play();
+  }catch(e){alert("Could not play audio. Check internet.")}
+}
+async function playSurah(){
+  const audio=$("quranAudio");
+  const rec=getReciter();
+  try{
+    const r=await fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/${rec}`);
+    const d=await r.json();
+    const first=d.data.ayahs && d.data.ayahs[0] ? d.data.ayahs[0].audio : "";
+    if(!first){alert("Audio not available for this reciter.");return}
+    audio.src=first;
+    audio.play();
+    let idx=0;
+    audio.onended=()=>{
+      idx++;
+      if(d.data.ayahs[idx]){
+        audio.src=d.data.ayahs[idx].audio;
+        audio.play();
+      }
+    };
+  }catch(e){alert("Could not play surah audio. Check internet.")}
+}
+if($("playSurahBtn")) $("playSurahBtn").onclick=playSurah;
+if($("stopAudioBtn")) $("stopAudioBtn").onclick=()=>{const a=$("quranAudio");a.pause();a.currentTime=0};
+
 </script>
 
 <script>
@@ -64,6 +117,42 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./service-worker.js").catch(console.error);
   });
 }
+
+function pad3(n){return String(n).padStart(3,"0")}
+function getReciter(){return $("reciter") ? $("reciter").value : "ar.alafasy"}
+async function playAyah(ayah){
+  const audio=$("quranAudio");
+  const rec=getReciter();
+  try{
+    const r=await fetch(`https://api.alquran.cloud/v1/ayah/${selectedSurah}:${ayah}/${rec}`);
+    const d=await r.json();
+    audio.src=d.data.audio;
+    audio.play();
+  }catch(e){alert("Could not play audio. Check internet.")}
+}
+async function playSurah(){
+  const audio=$("quranAudio");
+  const rec=getReciter();
+  try{
+    const r=await fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}/${rec}`);
+    const d=await r.json();
+    const first=d.data.ayahs && d.data.ayahs[0] ? d.data.ayahs[0].audio : "";
+    if(!first){alert("Audio not available for this reciter.");return}
+    audio.src=first;
+    audio.play();
+    let idx=0;
+    audio.onended=()=>{
+      idx++;
+      if(d.data.ayahs[idx]){
+        audio.src=d.data.ayahs[idx].audio;
+        audio.play();
+      }
+    };
+  }catch(e){alert("Could not play surah audio. Check internet.")}
+}
+if($("playSurahBtn")) $("playSurahBtn").onclick=playSurah;
+if($("stopAudioBtn")) $("stopAudioBtn").onclick=()=>{const a=$("quranAudio");a.pause();a.currentTime=0};
+
 </script>
 
 </body>
