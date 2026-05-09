@@ -1,14 +1,18 @@
-Athan Quran Qibla App - More Reciters Version
+Athan Quran Qibla App Upgrade
 
-Features:
-- Quran Arabic + English translation
-- 25+ reciter choices from Al Quran Cloud audio editions
+Files:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+
+Added:
+- Quran player with Play/Pause, Previous Ayah, Next Ayah
 - Continuous playback ayah-by-ayah
-- Auto moves to next surah after finishing current surah
-- Bigger Quran controls and ayah boxes
-- Prayer times / Athan times
-- Qibla compass
-- Athkar Sabah/Masae, Istighfar, and Tasbih counter
-- PWA files included: manifest + service worker
+- Auto next surah after current surah finishes
+- Saved Quran progress using localStorage
+- Saved reciter, translation, repeat mode
+- Full Athkar counters: Sabah, Masae, Istighfar, Tasbih
+- Prayer times, GPS prayer times, Qibla compass
 
-Upload this folder to GitHub/Vercel. Main file: index.html
+Deploy:
+Upload these files to GitHub/Vercel. Main file must be named index.html.
