@@ -41,7 +41,33 @@
 
   <section id="athkarPage" class="page"><h1 class="page-title">Athkar</h1><div class="card"><h2>Morning / Evening</h2><p><b>سُبْحَانَ اللهِ وَبِحَمْدِهِ</b></p><p>SubhanAllahi wa bihamdihi.</p></div><div class="card"><h2>Tasbih</h2><div class="athkar-counter" id="tasbihCount">0</div><button class="btn green" onclick="tasbihPlus()">+ Count</button><button class="btn" onclick="tasbihReset()" style="margin-top:9px">Reset</button></div></section>
 
-  <section id="quranPage" class="page"><h1 class="page-title">Quran</h1><div class="sub">Arabic + Translation + Reciter</div><div class="card"><div class="quran-controls"><input id="surahNo" type="number" min="1" max="114" value="1" placeholder="Surah 1-114" /><select id="translation"><option value="en.sahih">Sahih International</option><option value="en.pickthall">Pickthall</option><option value="en.yusufali">Yusuf Ali</option></select><select id="reciter"><option value="ar.alafasy">Mishary Alafasy</option><option value="ar.abdulbasitmurattal">Abdul Basit</option><option value="ar.husary">Al-Husary</option><option value="ar.minshawi">Al-Minshawi</option><option value="ar.mahermuaiqly">Maher Al-Muaiqly</option></select><div class="quran-actions"><button class="btn green" onclick="loadSurah()">Load Surah</button><button class="btn" onclick="playContinuous()" style="background:#f6c616;color:#111">▶ Play Continuous</button></div><audio id="audio" controls style="width:100%"></audio></div><div id="ayahs"></div></div></section>
+  <section id="quranPage" class="page"><h1 class="page-title">Quran</h1><div class="sub">Arabic + Translation + Reciter</div><div class="card"><div class="quran-controls"><input id="surahNo" type="number" min="1" max="114" value="1" placeholder="Surah 1-114" /><select id="translation"><option value="en.sahih">Sahih International</option><option value="en.pickthall">Pickthall</option><option value="en.yusufali">Yusuf Ali</option></select><select id="reciter"><option value="ar.alafasy">Mishary Rashid Alafasy</option>
+<option value="ar.abdurrahmaansudais">Abdurrahman As-Sudais</option>
+<option value="ar.saoodshuraym">Saud Ash-Shuraym</option>
+<option value="ar.mahermuaiqly">Maher Al-Muaiqly</option>
+<option value="ar.abdulbasitmurattal">Abdul Basit Murattal</option>
+<option value="ar.abdulsamad">Abdul Samad</option>
+<option value="ar.husary">Mahmoud Khalil Al-Husary</option>
+<option value="ar.husarymujawwad">Al-Husary Mujawwad</option>
+<option value="ar.minshawi">Mohamed Siddiq Al-Minshawi</option>
+<option value="ar.minshawimujawwad">Al-Minshawi Mujawwad</option>
+<option value="ar.shaatree">Abu Bakr Ash-Shaatree</option>
+<option value="ar.ahmedajamy">Ahmed Al-Ajamy</option>
+<option value="ar.hanirifai">Hani Ar-Rifai</option>
+<option value="ar.hudhaify">Ali Al-Hudhaify</option>
+<option value="ar.ibrahimakhbar">Ibrahim Al-Akhdar</option>
+<option value="ar.muhammadayyoub">Muhammad Ayyoub</option>
+<option value="ar.muhammadjibreel">Muhammad Jibreel</option>
+<option value="ar.abdullahbasfar">Abdullah Basfar</option>
+<option value="ar.parhizgar">Shahriar Parhizgar</option>
+<option value="ar.aymanswoaid">Ayman Sowaid</option>
+<option value="ar.alafasy-2">Mishary Alafasy 2</option>
+<option value="ar.husary-2">Al-Husary 2</option>
+<option value="ar.mahermuaiqly-2">Maher Al-Muaiqly 2</option>
+<option value="ar.hudhaify-2">Al-Hudhaify 2</option>
+<option value="ar.husarymujawwad-2">Al-Husary Mujawwad 2</option>
+<option value="ar.muhammadayyoub-2">Muhammad Ayyoub 2</option>
+<option value="ar.muhammadjibreel-2">Muhammad Jibreel 2</option></select><div class="quran-actions"><button class="btn green" onclick="loadSurah()">Load Surah</button><button class="btn" onclick="playContinuous()" style="background:#f6c616;color:#111">▶ Play Continuous</button></div><audio id="audio" controls style="width:100%"></audio></div><div id="ayahs"></div></div></section>
 
   <section id="settingsPage" class="page"><h1 class="page-title">Settings</h1><div class="card"><h2>Prayer Location</h2><div class="settings-grid"><input id="city" placeholder="City" value="Fairfield" /><input id="country" placeholder="Country" value="United States" /><select id="method"><option value="2">ISNA</option><option value="3">Muslim World League</option><option value="4">Umm Al-Qura</option><option value="5">Egyptian General Authority</option></select><button class="btn green" onclick="saveSettings()">Save + Reload Times</button></div></div></section>
 </main>
@@ -55,7 +81,7 @@
 </nav>
 
 <script>
-const $=id=>document.getElementById(id);let prayerTimes={},qiblaBearing=0,heading=0,tasbih=Number(localStorage.getItem('tasbih')||0),currentSurah=1,currentAyah=1,autoPlayQuran=false,totalAyahs=0;$('tasbihCount').textContent=tasbih;
+const $=id=>document.getElementById(id);let prayerTimes={},qiblaBearing=0,heading=0,tasbih=Number(localStorage.getItem('tasbih')||0),currentSurah=1,currentAyah=1,autoPlayQuran=false,totalAyahs=0;$('tasbihCount').textContent=tasbih; if(localStorage.getItem('reciter')) $('reciter').value=localStorage.getItem('reciter');
 function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function setPrayersView(view){$('qiblaView').style.display=view==='qibla'?'block':'none';$('timesView').style.display=view==='times'?'block':'none';$('qiblaTab').classList.toggle('active',view==='qibla');$('timesTab').classList.toggle('active',view==='times')}
 function updateClock(){let d=new Date();$('clock').textContent=d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}setInterval(updateClock,1000);updateClock();
@@ -86,7 +112,7 @@ async function playContinuous(){
  playAyah(currentSurah,currentAyah,true);
 }
 async function playAyah(s,a,continuous=false){
- currentSurah=s;currentAyah=a;autoPlayQuran=continuous;
+ currentSurah=s;currentAyah=a;autoPlayQuran=continuous; localStorage.setItem('reciter',$('reciter').value);
  try{
   let r=await fetch(`https://api.alquran.cloud/v1/ayah/${s}:${a}/${$('reciter').value}`);
   let d=await r.json();
