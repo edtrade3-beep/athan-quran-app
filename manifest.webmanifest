@@ -1,9 +1,1 @@
-{
-  "name": "Athan Quran Qibla",
-  "short_name": "Athan",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0b5656",
-  "theme_color": "#149c9b",
-  "icons": []
-}
+{"name":"Athan Quran Qibla","short_name":"Athan Quran","start_url":"./index.html","display":"standalone","background_color":"#169b9b","theme_color":"#169b9b","icons":[]}
